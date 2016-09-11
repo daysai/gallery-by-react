@@ -1,18 +1,18 @@
 require('normalize.css/normalize.css');
-require('styles/App.css');
+require('styles/App.scss');
 
 import React from 'react';
+import ReactDOM from 'react-dom';
 
 let imageData = require('../data/imageData.json');
-let yeomanImage = require('../images/yeoman.png');
 
 // 将图片名信息转成图片URL路径信息
 imageData = (function genImageURL(imageDataArr) {
-    for (let i = 0; i < imageDataArr.length; i++) {
-        let singleImageData = imageDataArr[i];
+    imageDataArr.forEach(function(value, index) {
+        let singleImageData = imageDataArr[index];
         singleImageData.imageURL = require('../images/' + singleImageData.fileName);
-        imageDataArr[i] = singleImageData;
-    }
+        imageDataArr[index] = singleImageData;
+    });
     return imageDataArr;
 })(imageData);
 
@@ -46,23 +46,36 @@ let getRangeRandom = (low, high) => Math.floor(Math.random() * (high - low) + lo
 
 class AppComponent extends React.Component {
 
-    Constant: {
-        centerPos: {
-            left: 0,
-            right: 0
-        },
-        hPosRange: { // 水平方向的取值范围
-            leftSecX: [0, 0],
-            rightSecX: [0, 0],
-            y: [0, 0]
-        },
-        vPosRange: { // 垂直方向的取值范围
-            x: [0, 0],
-            topY: [0, 0]
-        }
+    constructor(props) {
+        super(props);
+        this.Constant = {
+            centerPos: {
+                left: 0,
+                right: 0
+            },
+            hPosRange: { // 水平方向的取值范围
+                leftSecX: [0, 0],
+                rightSecX: [0, 0],
+                y: [0, 0]
+            },
+            vPosRange: { // 垂直方向的取值范围
+                x: [0, 0],
+                topY: [0, 0]
+            }
+        };
+        this.state = {
+            imgsArrangeArr: [
+                /*{
+                    pos: {
+                        left: '0',
+                        top: '0'
+                    }
+                }*/
+            ]
+        };
     }
-    /* 
-     * 重新布局所有图片
+
+    /* 重新布局所有图片
      * @param centerIndex 指定居中排布哪个图片
      */
     reArrange(centerIndex) {
@@ -121,35 +134,24 @@ class AppComponent extends React.Component {
 
         imgsArrangeArr.splice(centerIndex, 0, imgsArrangeCenterArr[0]);
 
+
         this.setState({
             imgsArrangeArr
         });
     }
 
-    getInitialState() {
-        return {
-            imgsArrangeArr: [
-                /*{
-                    pos: {
-                        left: '0',
-                        top: '0'
-                    }
-                }*/
-            ]
-        };
-    }
     // 组件加载以后，为每张图片计算位置的范围
     componentDidMount() {
 
         // 首先拿到舞台的大小
-        let stageDOM = React.findDOMNode(this.refs.stage),
+        let stageDOM = ReactDOM.findDOMNode(this.refs.stage),
             stageW = stageDOM.scrollWidth,
             stageH = stageDOM.scrollHeight,
             halfStageW = Math.floor(stageW / 2),
             halfStageH = Math.floor(stageH / 2);
 
         // 拿到一个imageFigure的大小
-        let imgFigureDOM = React.findDOMNode(this.refs.imgFigure0),
+        let imgFigureDOM = ReactDOM.findDOMNode(this.refs.imgFigure0),
             imgW = imgFigureDOM.scrollWidth,
             imgH = imgFigureDOM.scrollHeight,
             halfImgW = Math.floor(imgW / 2),
@@ -168,7 +170,8 @@ class AppComponent extends React.Component {
         this.Constant.vPosRange.topY = [-halfImgH, halfStageH - halfImgH * 3];
         this.Constant.vPosRange.x = [halfStageW - imgW, halfStageW];
 
-        this.reArrange(0);
+        // this.reArrange(0); // 固定中间位置为第一张
+        this.reArrange(Math.floor(getRangeRandom(0, imageData.length)));
 
     }
 
@@ -186,7 +189,7 @@ class AppComponent extends React.Component {
                     }
                 }
             }
-            imgFigures.push(<ImgFigure data={value} ref={'imgFigure' + index} arrange={this.state.imgsArrangeArr[index]}/>);
+            imgFigures.push(<ImgFigure key={index} data={value} ref={'imgFigure' + index} arrange={this.state.imgsArrangeArr[index]}/>);
         }.bind(this));
         return (
             <section className="stage" ref="stage">
