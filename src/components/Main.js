@@ -77,6 +77,36 @@ let getRangeRandom = (low, high) => Math.floor(Math.random() * (high - low) + lo
 // }
 let get30DegRandom = () => (Math.random() > 0.5 ? '' : '-') + Math.floor(Math.random() * 30);
 
+class ControllerUnit extends React.Component {
+    constructor(props) {
+        super(props);
+        this.handleClick = this.handleClick.bind(this);
+    }
+    handleClick(e) {
+        // 如果点击的是当前正在选中态的按钮，则翻转图片，否则将对应图片居中
+        if (this.props.arrange.isCenter) {
+            this.props.inverse();
+        } else {
+            this.props.center();
+        }
+        e.preventDefault();
+        e.stopPropagation();
+    }
+    render() {
+        let controllerUnitClassName = 'controller-unit';
+        // 如果对应的是居中的图片，显示控制按钮的居中态
+        if (this.props.arrange.isCenter) {
+            controllerUnitClassName += ' is-center';
+            // 如果同时对应的是翻转图片，显示控制按钮的翻转态
+            controllerUnitClassName += this.props.arrange.isInverse ? ' is-inverse' : '';
+        }
+        return (
+            <span className={controllerUnitClassName} onClick={this.handleClick}>
+            </span>
+        );
+    }
+}
+
 class AppComponent extends React.Component {
 
     constructor(props) {
@@ -118,7 +148,7 @@ class AppComponent extends React.Component {
     inverse(index) {
         return () => {
             let imgsArrangeArr = this.state.imgsArrangeArr;
-            imgsArrangeArr[index].isInverse = !imgsArrangeArr[index];
+            imgsArrangeArr[index].isInverse = !imgsArrangeArr[index].isInverse;
             this.setState({
                 imgsArrangeArr
             });
@@ -263,7 +293,7 @@ class AppComponent extends React.Component {
                 }
             }
             imgFigures.push(<ImgFigure key={index} data={value} ref={'imgFigure' + index} arrange={this.state.imgsArrangeArr[index]} inverse={this.inverse(index)} center={this.center(index)}/>);
-
+            controllerUnits.push(<ControllerUnit key={index} arrange={this.state.imgsArrangeArr[index]} inverse={this.inverse(index)} center={this.center(index)}/>);
         });
         return (
             <section className="stage" ref="stage">
