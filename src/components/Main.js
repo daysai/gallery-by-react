@@ -113,8 +113,8 @@ class AppComponent extends React.Component {
         super(props);
         this.Constant = {
             centerPos: {
-                left: 0,
-                right: 0
+                top: 0,
+                left: 0
             },
             hPosRange: { // 水平方向的取值范围
                 leftSecX: [0, 0],
@@ -233,7 +233,6 @@ class AppComponent extends React.Component {
         }
 
         imgsArrangeArr.splice(centerIndex, 0, imgsArrangeCenterArr[0]);
-
 
         this.setState({
             imgsArrangeArr
