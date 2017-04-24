@@ -3,7 +3,7 @@ import ImgFigure from './ImgFigure'
 
 export default class ImgList extends Component {
     render() {
-        const { width, height, items, onChangeClick } = this.props;
+        const { width, height, items, refresh, onChangeClick } = this.props;
         return (
             <section className="img-sec">
                 {items.map((item, index) =>
@@ -12,6 +12,7 @@ export default class ImgList extends Component {
                         width={width}
                         height={height}
                         {...item}
+                        refresh={refresh}
                         onClick={() => onChangeClick(index)} />
                 )}
             </section>)
@@ -28,5 +29,6 @@ ImgList.propTypes = {
         inverse: PropTypes.bool.isRequired,
         position: PropTypes.number.isRequired
     }).isRequired).isRequired,
+    refresh: PropTypes.bool.isRequired,
     onChangeClick: PropTypes.func.isRequired
 }

@@ -32,6 +32,8 @@ initState.items = ((imageDataArr) => {
     return stateItems;
 })(imageData);
 
+initState.refresh = true;
+
 let store = createStore(stageApp, initState);
 
 let appElement = document.getElementById('app');

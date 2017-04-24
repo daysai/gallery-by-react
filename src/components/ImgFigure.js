@@ -65,6 +65,18 @@ export default class ImgFigure extends Component {
             </figure>
         )
     }
+    shouldComponentUpdate(nextProps) {
+        const { position } = this.props;
+        const nextRefresh = nextProps.refresh;
+        const nextPos = nextProps.position;
+        if (nextRefresh) {
+            return true;
+        } else if (position === 0 || nextPos === 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
 
 ImgFigure.propTypes = {
@@ -75,6 +87,7 @@ ImgFigure.propTypes = {
     desc: PropTypes.string.isRequired,
     inverse: PropTypes.bool.isRequired,
     position: PropTypes.number.isRequired,
+    refresh: PropTypes.bool.isRequired,
     onClick: PropTypes.func.isRequired
 }
 

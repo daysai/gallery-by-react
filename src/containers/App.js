@@ -7,12 +7,13 @@ import ImgList from '../components/ImgList'
 
 class App extends Component {
     render() {
-        const { dispatch, stage, items } = this.props
+        const { dispatch, stage, items, refresh } = this.props
         return (
             <section className="stage" ref="stage">
                 <ImgList
                     {...stage}
                     items={items}
+                    refresh={refresh}
                     onChangeClick={index => {
                         if (items[index].position === 0) {
                             dispatch(toggleItem(index))
@@ -55,7 +56,8 @@ App.propTypes = {
         desc: PropTypes.string.isRequired,
         inverse: PropTypes.bool.isRequired,
         position: PropTypes.number.isRequired
-    }).isRequired).isRequired
+    }).isRequired).isRequired,
+    refresh: PropTypes.bool.isRequired
 }
 
 App = connect((state)=>state)(App)
